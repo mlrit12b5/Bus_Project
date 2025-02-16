@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where is my Bus</title>
+    <link rel="manifest" href="/pwaInstallation/manifest.json">
+    <link rel="shortcut icon" href="favicon.ico">
+    <script>
+        // Execute as soon as the script is loaded
+        (function() {
+            if (!(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true)) {
+                window.location = '/pwaInstallation/install.html';
+            } else {
+                window.location = '/indexMain.html';
+            }
+        })();
+    </script>
+    <script>
+        if (window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost') {
+            document.write('<script defer src="/_vercel/insights/script.js"><\/script>');
+        }
+    </script>
+</head>
+</html>

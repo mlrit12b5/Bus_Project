@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Important Announcement</title>
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f06, #bada55);
+            color: #333;
+            position: relative;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 80%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards;
+        }
+
+        .icons {
+            font-size: 30px;
+            color: #f06;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            .icons {
+                font-size: 40px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+        }
+
+        .floating-button {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .floating-button img {
+            width: 25px;
+            height: 25px;
+        }
+
+        /* Positioning for floating buttons */
+        .floating-button.left {
+            top: 20px;
+            left: 20px;
+        }
+
+        .floating-button.right {
+            top: 20px;
+            right: 20px;
+        }
+
+        .floating-button.middle {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 50px;
+            padding: 4px;
+            background: white;
+            border-radius: 5px; /* Add border-radius if you want it to look smooth */
+        }
+
+        .floating-button.middle img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icons">⚠ 📢 🚨</div>
+        <h1>Important Announcement</h1>
+        <p>
+            We are working on our system , please visit later !
+        </p>
+    </div>
+
+    <!-- Floating Button on the Left -->
+    <div class="floating-button left" onclick="history.back()">
+        <img src="/pwaInstallation/images/backArrow.svg" alt="Back">
+    </div>
+
+    <!-- Floating Button in the Top Center -->
+    <!-- <div class="floating-button middle" onclick="window.location='../changeBus.html'">
+        <img src="../route9/img/change-route.svg" alt="Change Route">
+    </div> -->
+
+    <!-- Floating Button on the Right -->
+    <div class="floating-button right" onclick="window.location='/profile.html'">
+        <img src="/img/profile.svg" alt="Profile">
+    </div>
+</body>
+</html>

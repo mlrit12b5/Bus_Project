@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Location - Two</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+        }
+        #map {
+            width: 0%;
+            height: 0%;
+        }
+        #info-section {
+            position: fixed;
+            background-color: ffffff;
+            padding: 50px;
+            z-index: 1000;
+            width: 300px;
+            text-align: center;
+        }
+        #info-section h3 {
+            margin: 0;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        #info-section p {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Map container -->
+    <div id="map"></div>
+
+    <div id="info-section">
+        <h3>Bus Location Address</h3>
+        <p id="location-address">Loading...</p>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script>
+        // Get the busLocation from the URL query parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var lat = parseFloat(urlParams.get('lat'));
+        var lng = parseFloat(urlParams.get('lng'));
+
+        console.log("Latitude:", lat, "Longitude:", lng);  // Debugging
+
+        // Initialize the map
+        var map = L.map('map').setView([lat, lng], 18);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Fetch the location data from the API (or use your own API URL)
+        var apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+
+        // Fetch location details from the API
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Check if "display_name" exists in the response
+                if (data.display_name) {
+                    document.getElementById('location-address').textContent = data.display_name;
+                } else {
+                    document.getElementById('location-address').textContent = 'Address not found';
+                }
+                
+                // Show the map once the address is loaded
+                document.getElementById('map').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('location-address').textContent = 'Error loading address';
+            });
+
+    </script>
+
+</body>
+</html>

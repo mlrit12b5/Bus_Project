@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where is my Bus</title>
+    <link rel="manifest" href="/pwaInstallation/manifest.json">
+    <link rel="shortcut icon" href="favicon.ico">
+    <style>
+        /* Your existing styles */
+        #institution,
+        #logo {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        #institution {
+            top: 7%;
+            /* Adjust the position as needed */
+        }
+
+        #institution img {
+            width: 65%;
+            /* Adjust the size as needed */
+            height: auto;
+        }
+
+        #logo img {
+            width: 100%;
+            /* Adjust the size as needed */
+            height: auto;
+        }
+
+        #logo {
+            top: 20%;
+            /* Adjust the position as needed */
+        }
+
+        #login-form {
+            display: none;
+            position: absolute;
+            top: 68%;
+            left: 50%;
+            width: 80%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        // Your existing JavaScript
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+        }
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (username === "Mlrit@2005" && password === "Mlrit@2005") {
+                // Set loginDone cookie valid for 365 days
+                setCookie("loginDone", "true", 365); // Expires in 365 days
+
+                // Redirect to profile.html
+                window.location.href = "profile.html";
+            } else {
+                alert("Invalid username or password!");
+            }
+        }
+
+        window.onload = function () {
+
+            // if (!(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true)) {
+            //     window.location = '/pwaInstallation/install.html';
+            //     return;
+            // } 
+            const cookieName = "loginDone";
+            const loginDetails = getCookie(cookieName);
+
+            if (!loginDetails) {
+                document.getElementById("login-form").style.display = "block";
+                document.getElementById("institution").style.display = "block";
+                document.getElementById("logo").style.display = "block";
+            } else {
+                const cookieName2 = "busDetails";
+                const busDetails = getCookie(cookieName2);
+                if (!busDetails) {
+                    window.location.href = "profile.html";
+                } else {
+                    // If cookie is present, log the defaultBus to console and redirect
+                    const details = JSON.parse(busDetails);
+                    const defaultBus = details.busRoute;
+                    window.location.href = defaultBus;
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <div id="institution">
+        <img src="img/institution.svg" alt="Institution Logo">
+    </div>
+    <div id="logo">
+        <img src="img/logoMain.svg" alt="Logo">
+    </div>
+    <div id="login-form">
+        <h2>Login</h2>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" class="input-field" required>
+        <br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" class="input-field" required>
+        <br><br>
+        <button onclick="login()">Login</button>
+    </div>
+    <script>
+        if (window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost') {
+            document.write('<script defer src="/_vercel/insights/script.js"><\/script>');
+        }
+    </script>
+</body>
+
+</html>

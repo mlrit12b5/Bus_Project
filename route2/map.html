@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where is my Bus</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&display=swap">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <style>
+        html,
+        body {
+            font-family: 'Manrope', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: black;
+            font-size: 15px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        header {
+            background-color: white;
+            padding: 3px;
+        }
+
+        .logo-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px;
+        }
+
+        .logo-menu img.logo {
+            width: 45px;
+            height: 45px;
+        }
+
+        .logo-menu img.change {
+            width: 111px;
+            height: 46px;
+        }
+
+        .logo-menu img.settings {
+            width: 28px;
+            height: 28px;
+        }
+
+        .update-from-to {
+            font-family: 'Manrope', sans-serif;
+            text-align: center;
+            padding: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            border-top: 1px solid black;
+        }
+
+        .info-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            border-top: 1px solid black;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid black;
+            padding: 5px;
+            margin: 5px;
+            border-radius: 5px;
+            color: black;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+        }
+
+        .info-item img {
+            margin-right: 5px;
+        }
+
+        .map-section {
+            flex: 1;
+            display: flex;
+        }
+
+        #map {
+            border-top: 1px solid black;
+            width: 100%;
+            height: 100%;
+        }
+
+        #layerButton {
+            position: fixed;
+            right: 6px;
+            z-index: 1000;
+            background-color: transparent;
+            padding: 0 0;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #layerButton img {
+            width: 35px;
+            height: 35px;
+            margin-right: 2px;
+        }
+
+        #layerButton.active {
+            padding: 0px;
+        }
+
+        .set-user-bus-button {
+            position: fixed;
+            right: 6px;
+            z-index: 1000;
+            margin-top: 40px;
+        }
+
+        .set-user-bus-button img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .location-address-button {
+            position: fixed;
+            right: 6px;
+            z-index: 1000;
+            margin-top: 80px;
+            /* Adjusted to place below the set-user-bus-button */
+        }
+
+        .location-address-button img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .directions-toGoogleMap {
+            position: fixed;
+            right: 6px;
+            z-index: 1000;
+            margin-top: 120px;
+            /* Adjusted to place below the set-user-bus-button */
+        }
+
+        .directions-toGoogleMap img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .bus-miss {
+            position: fixed;
+            right: 6px;
+            z-index: 1000;
+            margin-top: 160px;
+            /* Adjusted to place below the set-user-bus-button */
+        }
+
+        .bus-miss img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .floating-button {
+            position: fixed;
+            right: 0;
+            margin-top: 145px;
+            transform: translateY(calc(50px + 5px));
+            background-color: #3D408A;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 8px 0 0 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .follow-marker-button {
+            position: fixed;
+            bottom: 15px;
+            right: 10px;
+            background: yellow;
+            border: 1px solid black;
+            border-radius: 50%;
+            padding: 10px;
+            z-index: 1000;
+            width: 30px;
+            height: 30px;
+        }
+
+        .button-content {
+            display: flex;
+            align-items: center;
+        }
+
+        #buttonText {
+            font-size: 18px;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        .toggle-content {
+            display: none;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 38px;
+            height: 20px;
+            margin-left: 5px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #DDB948;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(18px);
+        }
+
+        .floating-button.expanded {
+            width: auto;
+        }
+
+        .floating-button.expanded .toggle-content {
+            display: flex;
+        }
+
+        .toggle-content span {
+            margin-right: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #iframe-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* background-color: rgba(0, 0, 0, 0.5); */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1002;
+            background-color: white;
+
+        }
+
+        iframe {
+
+            border: none;
+            background: transparent;
+        }
+
+        #close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+            line-height: 40px;
+        }
+
+        #close-btn:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-menu">
+            <img class="logo" src="../img/fullMap-ZeroCodeHR2.gif" alt="Logo" onclick="redirectToIndex();">
+            <img class="change" src="../route2/img/change-route.svg" alt="Change" onclick="redirectToChange();">
+            <img class="settings" src="../img/profile.svg" alt="Settings" onclick="redirectToSettings();">
+        </div>
+        <div class="update-from-to">
+            <span id="routeText">To BusStop</span>
+        </div>
+        <div class="info-panel">
+            <div class="info-item">
+                <img src="../img/distance.svg" alt="Distance" style="height: 28px; width: 28px;">
+                <span id="distance">Loading...</span>
+            </div>
+            <div class="info-item">
+                <img src="../img/time.svg" alt="Time" style="height: 28px; width: 28px;">
+                <span id="time">Loading...</span>
+            </div>
+            <div class="info-item">
+                <img src="../img/speed.svg" alt="Speed" style="height: 28px; width: 28px;">
+                <span id="speed">Loading...</span>
+            </div>
+            <img class="refresh-button" src="../img/refresh.svg" alt="Refresh" style="height: 28px; width: 28px;"
+                onclick="window.location.reload();">
+        </div>
+    </header>
+    <div class="map-section">
+        <div id="map">
+            <div id="layerButton" onclick="toggleMapLayer()">
+                <img id="layerButtonImg" src="../img/toSatellite.svg" alt="Layers">
+            </div>
+            <div class="set-user-bus-button" onclick="setUserBus()">
+                <img src="../img/follow_user.png" alt="Set User Bus">
+            </div>
+            <div class="location-address-button">
+                <img id="locationAddressID" src="../img/locationAddress.png" alt="Location Address">
+            </div>
+            <div class="directions-toGoogleMap">
+                <img id="directionsGoogleMap" src="../img/directions.png" alt="Directions To Google Map ">
+            </div>
+            <div class="bus-miss">
+                <img id="busMiss" src="../img/busMiss.png" alt="Buss Miss ">
+            </div>
+            <script>
+                var istTime = new Date().getHours();
+                // if (istTime >= 2 && istTime <= 13) {
+                document.write(`
+                    <div class="floating-button" id="isInBus">
+                        <div class="button-content">
+                            <span id="buttonText"><img src="../img/left.svg" alt="Left Arrow" width="15" height="15"></span>
+                            <div class="toggle-content" id="toggleContent">
+                                <span>In Bus?</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="toggleSwitch">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    `);
+                // }
+
+            </script>
+        </div>
+    </div>
+    <div id="iframe-container">
+        <button id="close-btn">&times;</button>
+        <iframe id="location-iframe"></iframe>
+    </div>
+    <img class="follow-marker-button" src="../img/follow.svg" alt="Follow Marker" onclick="toggleFollowMarker()">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script>
+        let isUserBusSet = false;  // Variable to keep track of toggle state
+        let userLocationMarker;    // Variable to store the user location marker
+
+        // Custom icon for the user's location marker
+        const userLocationIcon = L.icon({
+            iconUrl: '../img/deviceLocation.svg',
+            iconSize: [30, 30], // size of the icon
+            iconAnchor: [15, 15], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, -15] // point from which the popup should open relative to the iconAnchor
+        });
+
+        function redirectToIndex() {
+            window.parent.postMessage('reDirectToHomePage', '*');
+        }
+
+        function redirectToChange() {
+            window.parent.postMessage('reDirectToChangeBusPage', '*');
+        }
+
+        function redirectToSettings() {
+            window.parent.postMessage('reDirectToSettingsPage', '*');
+        }
+
+        function setUserBus() {
+            if (!isUserBusSet) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+                            const bounds = L.latLngBounds([
+                                [latitude, longitude],
+                                presentBusLocation
+                            ]);
+
+                            // Set user bus
+                            polyline.setStyle({ weight: 0 });
+                            map.once("zoomend", function () {
+                                polyline.setStyle({ weight: 3 });
+                            });
+                            map.flyToBounds(bounds, { padding: [40, 80, 40, 40] });
+                            document.querySelector('.set-user-bus-button img').src = "../img/follow_user_not.png";
+                            document.querySelector(".follow-marker-button").style.backgroundColor = "yellow";
+                            shouldFollowMarker = false;
+
+                            // Add or update user location marker with custom icon
+                            if (userLocationMarker) {
+                                userLocationMarker.setLatLng([latitude, longitude]).update();
+                            } else {
+                                userLocationMarker = L.marker([latitude, longitude], { icon: userLocationIcon }).addTo(map);
+                            }
+                            userLocationMarker.bindPopup("<b>It's You</b>").openPopup();
+
+                            // Toggle the state
+                            isUserBusSet = !isUserBusSet;
+                        },
+                        (error) => {
+                            switch (error.code) {
+                                case error.PERMISSION_DENIED:
+                                    alert("You denied the request for Geolocation. Please enable location services in your browser settings.");
+                                    break;
+                                case error.POSITION_UNAVAILABLE:
+                                    alert("Location information is unavailable.");
+                                    break;
+                                case error.TIMEOUT:
+                                    alert("The request to get your location timed out.");
+                                    break;
+                                case error.UNKNOWN_ERROR:
+                                    alert("An unknown error occurred.");
+                                    break;
+                            }
+                        }
+                    );
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            } else {
+                // Reset to previous bounds or state
+                polyline.setStyle({ weight: 0 });
+                map.once("zoomend", function () {
+                    polyline.setStyle({ weight: 3 });
+                });
+                map.flyToBounds(polyline.getBounds(), { padding: [30, 30, 30, 30] });
+                document.querySelector('.set-user-bus-button img').src = "../img/follow_user.png";
+                shouldFollowMarker = false;
+
+                // Hide user location marker
+                if (userLocationMarker) {
+                    userLocationMarker.remove();  // This hides the marker
+                    userLocationMarker = null;
+                }
+
+                // Toggle the state
+                isUserBusSet = !isUserBusSet;
+            }
+        }
+
+
+    </script>
+    <script>
+
+        // Event listener for the "Click Here" button
+        document.getElementById('locationAddressID').addEventListener('click', function () {
+            // Construct the URL for two.html with query parameters
+            var url = "/two.html?lat=" + presentBusLocation[0] + "&lng=" + presentBusLocation[1];
+
+            // Set the iframe src and display the iframe container
+            var iframe = document.getElementById('location-iframe');
+            iframe.src = url;
+            document.getElementById('iframe-container').style.display = 'flex';
+        });
+
+        // Event listener for the "Close" button
+        document.getElementById('close-btn').addEventListener('click', function () {
+            // Hide the iframe container and clear the iframe src
+            var iframe = document.getElementById('location-iframe');
+            iframe.src = '';
+            document.getElementById('iframe-container').style.display = 'none';
+        });
+    </script>
+
+    <script src="../busMiss.js" defer></script>
+    <script src="../directionsToGoogleMap.js" defer></script>
+    <script src="index.js" defer></script>

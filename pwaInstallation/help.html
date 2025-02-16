@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Page</title>
+    <link rel="manifest" href="/pwaInstallation/manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f06, #bada55);
+            color: #333;
+            position: relative;
+            /* Added to position the floating button */
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 75%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #f06;
+        }
+
+        ol {
+            text-align: left;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .floating-button img {
+            width: 25px;
+            height: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Help?</h1>
+        <div id="instructions"></div>
+    </div>
+
+    <div class="floating-button" onclick="window.location='/pwaInstallation/install.html'">
+        <img src="/pwaInstallation/images/backArrow.svg" alt="Back">
+    </div>
+
+    <script>
+
+        function getDeviceType() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            if (/android/i.test(userAgent)) {
+                return "android";
+            }
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return "iphone";
+            }
+            if (/windows phone/i.test(userAgent) || /windows nt/i.test(userAgent) || /win/i.test(userAgent)) {
+                return "windows";
+            }
+            return "other";
+        }
+
+        const deviceType = getDeviceType();
+        const instructionsDiv = document.getElementById('instructions');
+
+        if (deviceType === "iphone") {
+            instructionsDiv.innerHTML = `
+                <h2>Instructions for iPhone</h2>
+                <h4>Open the website in Safari Browser only !!</h4>
+                <ol>
+                    <li>Make sure your browser is <b>updated</b>.</li>
+                    <li>At the bottom of the screen, tap the <b>Share Icon</b> (a square with an arrow pointing up).</li>
+                    <li>Select <b>Add to Home Screen</b> in the share menu.</li>
+                    <li>Tap <b>Add</b> to confirm.</li>
+                </ol>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;">
+                    <p style="margin: 0;">Any Query?</p>
+                    <a href="mailto:mlrit-whereismybus@gmail.com?subject=Problem%20with%20App%20Download">
+                        <img src="/pwaInstallation/images/mail.svg" alt="Email" style="width: 25px; height: 25px;"/>
+                    </a>
+                </div>
+            `;
+        } else if (deviceType === "android") {
+            instructionsDiv.innerHTML = `
+                <h2>Instructions</h2>
+                <h4>Open the website in Google Chrome Browser only !!</h4>
+                <ol>
+                    <li>Make sure your browser is <b>updated</b>.</li>
+                    <li>Tap the <b>Menu</b> Button (Usually <b>three-dot</b>) in the <b>top-right</b> corner.</li>
+                    <li>Select <b>Add to Home Screen</b> from the List.</li>
+                    <li>Tap <b>Install</b>.</li>
+                </ol>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;">
+                    <p style="margin: 0;">Any Query?</p>
+                    <a href="mailto:mlrit-whereismybus@gmail.com?subject=Problem%20with%20App%20Download">
+                        <img src="/pwaInstallation/images/mail.svg" alt="Email" style="width: 25px; height: 25px;"/>
+                    </a>
+                </div>
+            `;
+        }
+        else if (deviceType === "windows") {
+            instructionsDiv.innerHTML = `
+                <h2>Instructions</h2>
+                <h4>Open the website in Google Chrome Browser only !!</h4>
+                <ol>
+                    <li>Make sure your browser is <b>updated</b>.</li>
+                    <li>Tap the <b>Menu</b> Button (Usually <b>three-lines</b>) in the <b>top-right</b> corner.</li>
+                    <li>Select <b>Save and Share</b> from the List.</li>
+                    <li>Tap <b>Install</b>.</li>
+                </ol>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;">
+                    <p style="margin: 0;">Any Query?</p>
+                    <a href="mailto:mlrit-whereismybus@gmail.com?subject=Problem%20with%20App%20Download">
+                        <img src="/pwaInstallation/images/mail.svg" alt="Email" style="width: 25px; height: 25px;"/>
+                    </a>
+                </div>
+            `;
+        }
+        else {
+            instructionsDiv.innerHTML = "<p>Your device is not recognized as iPhone, Android, or Windows.</p>";
+        }
+    </script>
+    <script>
+        if (window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost') {
+            document.write('<script defer src="/_vercel/insights/script.js"><\/script>');
+        }
+    </script>
+    <script>
+        window.addEventListener('load', function () {
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+                window.location = '../index.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

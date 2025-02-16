@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Installation page</title>
+    <link rel="manifest" href="/pwaInstallation/manifest.json">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            /* Center content vertically and horizontally */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* Full viewport height */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 360px;
+            /* Max width for larger screens */
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            background-color: #ffffff;
+            /* Slightly off-white background */
+            /* box-shadow: 0 0 10px rgba(0,0,0,0.1); Subtle shadow for better contrast */
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            /* Space below header */
+        }
+
+        .header img {
+            height: 120px;
+            width: auto;
+        }
+
+        .note {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .note h3 {
+            font-size: 16px;
+            /* Adjust font size for readability */
+            color: #333;
+            /* Dark grey color for text */
+            margin: 0;
+            /* Remove default margin */
+        }
+
+        .content-container {
+            padding: 10px;
+        }
+
+        .text-container {
+            text-align: center;
+            margin-bottom: 20px;
+            /* Space below text */
+        }
+
+        .text-container h2 {
+            font-size: 18px;
+            margin: 0;
+            color: #444;
+            /* Slightly lighter grey for text */
+        }
+
+        .button-container {
+            text-align: center;
+        }
+
+        .button-container button {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .button-container img {
+            height: 60px;
+            width: auto;
+        }
+
+        .help-wrapper {
+            display: flex;
+            justify-content: space-between;
+            /* Distributes space between the flex items */
+            margin-top: 20px;
+            /* Space above help link */
+            padding: 5px;
+        }
+
+        .help-link {
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .alert {
+            border: 2px solid #000;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            /* Light yellow background */
+            color: #856404;
+            /* Dark yellow color for text */
+        }
+
+        .alert img {
+            height: 25px;
+            width: auto;
+        }
+
+        .alert p {
+            margin-top: 10px;
+            font-size: 16px;
+            margin: 0;
+            /* Remove default margin */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .header img {
+                height: 100px;
+                /* Adjust logo size for smaller screens */
+            }
+
+            .note h3 {
+                font-size: 14px;
+                /* Adjust font size for smaller screens */
+            }
+
+            .text-container h2 {
+                font-size: 16px;
+                /* Adjust font size for smaller screens */
+            }
+
+            .button-container img {
+                height: 50px;
+                /* Adjust button size for smaller screens */
+            }
+
+            .alert {
+                padding: 10px;
+                /* Adjust padding for smaller screens */
+            }
+
+            .alert img {
+                height: 20px;
+                /* Adjust image size for smaller screens */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/pwaInstallation/images/logoMain.svg" alt="Logo">
+        </div>
+        <div class="note">
+            <h3>Your destination for seamless Bus Tracking</h3>
+            <h3>— Anytime, Anywhere.</h3>
+        </div>
+        <div class="content-container">
+            <div class="text-container">
+                <h2 id="text-content">Install App</h2>
+            </div>
+            <div class="button-container">
+                <button id="download-pwa">
+                    <img src="/pwaInstallation/images/download.png" alt="Download PWA">
+                </button>
+            </div>
+        </div>
+        <div class="help-wrapper">
+            <a href="#" class="help-link"
+                onclick="window.location='../indexMain.html'">Continue with website !</a>
+            <a href="#" class="help-link" onclick="openHelpPage()">help?</a>
+        </div>
+        <div class="alert" id="alertBox">
+            <img src="/pwaInstallation/images/alert.png" alt="Alert"> <br>
+            <p id="alertMessage"><b>Loading ...</b></p>
+        </div>
+    </div>
+    <script>
+        if (window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost') {
+            document.write('<script defer src="/_vercel/insights/script.js"><\/script>');
+        }
+    </script>
+</body>
+<script>
+    // Function to detect if the user is on an iPhone
+    function isIPhone() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        return (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream);
+    }
+    if (isIPhone()) {
+        document.getElementById('alertMessage').innerHTML = 'Use <b>Safari Browser</b> Only !!';
+    }
+    else {
+        document.getElementById('alertMessage').innerHTML = 'Use <b>Google Chrome</b> Only !!';
+    }
+
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        window.location = '../index.html';
+    }
+
+    let deferredPrompt; // Variable to hold the deferred prompt event
+
+    // Set up the 'beforeinstallprompt' event listener once when the script loads
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); // Prevent the default mini-infobar or install prompt
+        deferredPrompt = e; // Save the event for later use
+    });
+
+    // Handle click event on the "download-pwa" button
+    document.getElementById('download-pwa').addEventListener('click', () => {
+        if (isIPhone()) {
+            // Redirect to help page for iPhone users
+            window.location = '/pwaInstallation/help.html';
+        } else if (deferredPrompt) {
+            // Show the prompt if it's available
+            deferredPrompt.prompt(); // Show the PWA install prompt
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the PWA prompt');
+                    document.getElementById('text-content').innerHTML = 'Hang on !!  App Installing ...';
+                } else {
+                    console.log('User dismissed the PWA prompt');
+                }
+                deferredPrompt = null; // Clear the deferred prompt after use
+            });
+        } else if ((document.getElementById('text-content').innerHTML === 'Hang on !!  App Installing ...')) {
+            alert('App is Installing ... or already Installed !! \n please check you device App Screen.')
+        } else{
+            window.location="/pwaInstallation/help.html";
+        }
+    });
+
+
+    function openHelpPage() {
+        window.location.href = '/pwaInstallation/help.html';
+    }
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/pwaInstallation/service-worker.js')
+                .then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+        });
+    }
+</script>
+
+</html>
